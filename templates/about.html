@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About PCOS - Information & Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .content-section h3 {
+            color: #555;
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .content-section p {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .content-section ul, .content-section ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        /* Highlighted Text */
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .highlight h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .info-card {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e1e5e9;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .info-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-box p {
+            color: #856404;
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-info-circle"></i> About PCOS</h1>
+            <p>Understanding Polycystic Ovary Syndrome</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="{{ url_for('about') }}" class="nav-link active">
+                <i class="fas fa-info-circle"></i> About PCOS
+            </a>
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <i class="fas fa-calculator"></i> Predict PCOS
+            </a>
+        </div>
+
+        <!-- What is PCOS -->
+        <div class="content-section">
+            <h2><i class="fas fa-question-circle"></i> What is PCOS?</h2>
+            <p>
+                <strong>Polycystic Ovary Syndrome (PCOS)</strong> is a complex hormonal disorder that affects women of reproductive age. 
+                It's characterized by an imbalance of reproductive hormones that can wreak havoc on your reproductive system and overall health.
+            </p>
+            
+            <div class="highlight">
+                <h3><i class="fas fa-lightbulb"></i> Key Insight</h3>
+                <p>
+                    PCOS is deeply affected by the way your hormones interact with each other. When one reproductive hormone is thrown off balance, 
+                    it affects how all the others work in your body, creating a cascade of symptoms and health issues.
+                </p>
+            </div>
+
+            <p>
+                If you have balanced hormones, your ovaries make an egg that's released into your fallopian tubes every month to await fertilization. 
+                However, with PCOS, your ovaries may not develop the egg to maturity or may not release the developed egg during ovulation.
+            </p>
+
+            <p>
+                This hormonal imbalance can cause irregular or missed periods, leading to infertility and the growth of small cysts on your ovaries. 
+                While these cysts aren't harmful on their own, they can contribute to further hormonal imbalance.
+            </p>
+        </div>
+
+        <!-- Prevalence -->
+        <div class="content-section">
+            <h2><i class="fas fa-globe"></i> Global Prevalence</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">2.2% - 26%</div>
+                    <div class="stat-label">Global Prevalence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2% - 7.5%</div>
+                    <div class="stat-label">China</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6.3%</div>
+                    <div class="stat-label">Sri Lanka</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9.13% - 22.5%</div>
+                    <div class="stat-label">India</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Causes -->
+        <div class="content-section">
+            <h2><i class="fas fa-search"></i> Causes of PCOS</h2>
+            <p>The exact cause of PCOS is not fully understood, but several factors are believed to contribute:</p>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4><i class="fas fa-dna"></i> Genetics</h4>
+                    <p>Family history plays a significant role. If your mother or sister has PCOS, you're more likely to develop it.</p>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-flask"></i> High Androgen Levels</h4>
+                    <p>Elevated levels of male hormones (androgens) can prevent the ovaries from releasing eggs normally.</p>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-chart-line"></i> Insulin Resistance</h4>
+                    <p>Many women with PCOS have insulin resistance, which can lead to high blood sugar and weight gain.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Symptoms -->
+        <div class="content-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Common Symptoms</h2>
+            <p>PCOS can manifest in various ways, and symptoms can vary significantly between individuals:</p>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4><i class="fas fa-calendar-times"></i> Menstrual Issues</h4>
+                    <ul>
+                        <li>Irregular or absent menstrual cycles</li>
+                        <li>Heavy or light bleeding</li>
+                        <li>Difficulty tracking ovulation</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-weight"></i> Weight & Metabolism</h4>
+                    <ul>
+                        <li>Difficulty managing weight</li>
+                        <li>Insulin resistance</li>
+                        <li>Increased risk of diabetes</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-user"></i> Physical Changes</h4>
+                    <ul>
+                        <li>Excessive hair growth (Hirsutism)</li>
+                        <li>Acne on face, chest, and back</li>
+                        <li>Darkening of skin</li>
+                        <li>Hair loss or thinning</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-heart"></i> Other Symptoms</h4>
+                    <ul>
+                        <li>Pelvic pain</li>
+                        <li>Sleep apnea</li>
+                        <li>Depression or mood swings</li>
+                        <li>Multiple miscarriages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diagnosis -->
+        <div class="content-section">
+            <h2><i class="fas fa-stethoscope"></i> How is PCOS Diagnosed?</h2>
+            
+            <div class="warning-box">
+                <h4><i class="fas fa-exclamation-triangle"></i> Important Note</h4>
+                <p>
+                    <strong>The average woman with PCOS goes SEVEN YEARS without getting a proper diagnosis.</strong> 
+                    This is often due to the lack of definitive tests and the need for doctors to review multiple factors.
+                </p>
+            </div>
+
+            <p>Diagnosis typically involves several approaches:</p>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4><i class="fas fa-user-md"></i> Physical Examination</h4>
+                    <p>Your doctor will measure BMI, waist size, blood pressure, and check for skin discoloration, skin tags, extra hair, and thyroid enlargement.</p>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-procedures"></i> Pelvic Examination</h4>
+                    <p>This exam checks for signs of excessive male hormones and determines if your ovaries are swollen or enlarged.</p>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-ultrasound"></i> Pelvic Ultrasound</h4>
+                    <p>Using ultrasound technology, your doctor can check for cysts on your ovaries, one of the key signs of PCOS.</p>
+                </div>
+                <div class="info-card">
+                    <h4><i class="fas fa-tint"></i> Blood Tests</h4>
+                    <p>Various blood tests check hormone levels including testosterone, prolactin, cholesterol, TSH, and glucose tolerance.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment -->
+        <div class="content-section">
+            <h2><i class="fas fa-medkit"></i> Treatment Options</h2>
+            
+            <h3><i class="fas fa-weight"></i> Weight Management</h3>
+            <p>
+                Even a small amount of weight loss can make a significant difference. A 10% decrease in weight can help:
+            </p>
+            <ul>
+                <li>Kickstart ovulation</li>
+                <li>Increase chances of pregnancy</li>
+                <li>Normalize hormone levels</li>
+                <li>Improve insulin sensitivity</li>
+            </ul>
+
+            <h3><i class="fas fa-apple-alt"></i> Dietary Changes</h3>
+            <p>
+                A balanced diet rich in fiber, lean proteins, and anti-inflammatory foods is crucial. Focus on:
+            </p>
+            <ul>
+                <li>Fiber-rich vegetables (broccoli, spinach)</li>
+                <li>Lean proteins (chicken, fish, legumes)</li>
+                <li>Anti-inflammatory foods (tomatoes, olive oil, nuts)</li>
+                <li>Avoid refined carbs, sugar, and processed foods</li>
+            </ul>
+
+            <h3><i class="fas fa-pills"></i> Medications</h3>
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4>Metformin</h4>
+                    <p>Helps treat type 2 diabetes and can restart ovulation. Weight loss is a common side effect.</p>
+                </div>
+                <div class="info-card">
+                    <h4>Anti-androgen Medication</h4>
+                    <p>Blocks the effects of androgens, helping with hair loss, excessive hair growth, and acne.</p>
+                </div>
+                <div class="info-card">
+                    <h4>Hormonal Birth Control</h4>
+                    <p>Can regulate menstrual cycles, lower cancer risk, and improve acne and hair growth.</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-baby"></i> Fertility Treatment</h3>
+            <p>For women trying to conceive, several options are available:</p>
+            <ul>
+                <li><strong>Fertility medication:</strong> Clomid can help increase ovulation</li>
+                <li><strong>IVF:</strong> In vitro fertilization for more complex cases</li>
+                <li><strong>Ovarian drilling:</strong> A surgical procedure that can restore ovulation temporarily</li>
+            </ul>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="content-section">
+            <h2><i class="fas fa-arrow-right"></i> Take Action</h2>
+            <div class="highlight">
+                <h3><i class="fas fa-heart"></i> Your Health Matters</h3>
+                <p>
+                    If you're experiencing symptoms of PCOS, don't wait to seek help. Early diagnosis and treatment can significantly improve 
+                    your quality of life and long-term health outcomes. Use our prediction tool to assess your risk and consult with a 
+                    healthcare provider for proper diagnosis and treatment.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add active class to current nav link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+    
+    <!-- Enhanced JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

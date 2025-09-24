@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Prediction Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Information Section */
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .hormone-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .hormone-table th,
+        .hormone-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .hormone-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .hormone-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .note-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .note-section h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .note-section ul {
+            padding-left: 20px;
+        }
+
+        .note-section li {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Prediction Result */
+        .prediction-result {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .prediction-result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .prediction-text {
+            font-size: 1.2rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Form Categories */
+        .form-category {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-category h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> PCOS Prediction Tool</h1>
+            <p>Advanced machine learning-based PCOS risk assessment</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="{{ url_for('about') }}" class="nav-link">
+                <i class="fas fa-info-circle"></i> About PCOS
+            </a>
+            <a href="{{ url_for('home') }}" class="nav-link active">
+                <i class="fas fa-calculator"></i> Predict PCOS
+            </a>
+        </div>
+
+        <div class="main-content">
+            <!-- Information Section -->
+            <div class="info-section">
+                <h2><i class="fas fa-flask"></i> Hormonal Information</h2>
+                <table class="hormone-table">
+                    <thead>
+                        <tr>
+                            <th>Hormone</th>
+                            <th>Full Name</th>
+                            <th>PCOS Significance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>FSH</strong></td>
+                            <td>Follicle Stimulating Hormone</td>
+                            <td>Low levels (<6 mlU/ml) prevent ovulation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LH</strong></td>
+                            <td>Luteinizing Hormone</td>
+                            <td>High levels (>18 mlU/ml) common in PCOS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TSH</strong></td>
+                            <td>Thyroid Stimulating Hormone</td>
+                            <td>Elevated levels indicate hypothyroidism</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMH</strong></td>
+                            <td>Anti-Müllerian Hormone</td>
+                            <td>Elevated levels (>48 pmol/L) suggest PCOS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PRL</strong></td>
+                            <td>Prolactin</td>
+                            <td>Mildly elevated in PCOS patients</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vit D3</strong></td>
+                            <td>Vitamin D3</td>
+                            <td>67-85% deficiency rate in PCOS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PRG</strong></td>
+                            <td>Progesterone</td>
+                            <td>Higher levels needed to regulate GnRH</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RBS</strong></td>
+                            <td>Random Blood Sugar</td>
+                            <td>30-40% have insulin resistance</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="note-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
+                    <ul>
+                        <li><strong>Blood Pressure:</strong> Systolic (heart contracting) and Diastolic (heart relaxing)</li>
+                        <li><strong>Follicle Count:</strong> PCOS patients often have 12+ immature follicles</li>
+                        <li><strong>Yes/No Questions:</strong> Use 1 for Yes, 0 for No</li>
+                        <li><strong>Units:</strong> Use metric system for all measurements</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2><i class="fas fa-clipboard-list"></i> PCOS Risk Assessment</h2>
+                
+                <form action="{{ url_for('predict') }}" method="post">
+                    <!-- Personal Information -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="Age">Age</label>
+                                <input type="number" id="Age" name="Age" placeholder="Enter your age" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Weight">Weight (kg)</label>
+                                <input type="number" step="0.1" id="Weight" name="Weight" placeholder="Weight in kg" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Height">Height (cm)</label>
+                                <input type="number" step="0.1" id="Height" name="Height" placeholder="Height in cm" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="BMI">BMI</label>
+                                <input type="number" step="0.1" id="BMI" name="BMI" placeholder="Body Mass Index" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vital Signs -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-heartbeat"></i> Vital Signs</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="PulseRate">Pulse Rate (bpm)</label>
+                                <input type="number" id="PulseRate" name="PulseRate" placeholder="Beats per minute" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="RR">Respiration Rate</label>
+                                <input type="number" id="RR" name="RR" placeholder="Breaths per minute" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="BP_systolic">Systolic BP (mmHg)</label>
+                                <input type="number" id="BP_systolic" name="BP_systolic" placeholder="Systolic pressure" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="BP_diastolic">Diastolic BP (mmHg)</label>
+                                <input type="number" id="BP_diastolic" name="BP_diastolic" placeholder="Diastolic pressure" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reproductive History -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-baby"></i> Reproductive History</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="Cycle">Irregular Periods?</label>
+                                <input type="number" id="Cycle" name="Cycle(R/I)" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Pregnant">Ever Been Pregnant?</label>
+                                <input type="number" id="Pregnant" name="Pregnant" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Abortions">Number of Abortions</label>
+                                <input type="number" id="Abortions" name="No. of Abortions" placeholder="Count of abortions" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Follicle_count">Follicle Count</label>
+                                <input type="number" id="Follicle_count" name="Follicle_count" placeholder="Total follicle count" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hormone Levels -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-flask"></i> Hormone Levels</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="FSH">FSH Level (mlU/ml)</label>
+                                <input type="number" step="0.1" id="FSH" name="FSH" placeholder="FSH level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="LH">LH Level (mlU/ml)</label>
+                                <input type="number" step="0.1" id="LH" name="LH" placeholder="LH level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="FSH_LH_ratio">FSH:LH Ratio</label>
+                                <input type="number" step="0.1" id="FSH_LH_ratio" name="FSH_LH_ratio" placeholder="FSH to LH ratio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="TSH">TSH Level (μIU/ml)</label>
+                                <input type="number" step="0.1" id="TSH" name="TSH" placeholder="TSH level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="AMH">AMH Level (pmol/L)</label>
+                                <input type="number" step="0.1" id="AMH" name="AMH" placeholder="AMH level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="PRL">PRL Level (ng/ml)</label>
+                                <input type="number" step="0.1" id="PRL" name="PRL" placeholder="Prolactin level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="VitD3">Vitamin D3 (ng/ml)</label>
+                                <input type="number" step="0.1" id="VitD3" name="VitD3" placeholder="Vitamin D3 level" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="PRG">Progesterone (ng/ml)</label>
+                                <input type="number" step="0.1" id="PRG" name="PRG" placeholder="Progesterone level" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Measurements -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-ruler"></i> Additional Measurements</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="W_H_ratio">Waist:Hip Ratio</label>
+                                <input type="number" step="0.01" id="W_H_ratio" name="W_H_ratio" placeholder="Waist to hip ratio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="RBS">Random Blood Sugar (mg/dl)</label>
+                                <input type="number" step="0.1" id="RBS" name="RBS" placeholder="Blood sugar level" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Symptoms & Lifestyle -->
+                    <div class="form-category">
+                        <h3><i class="fas fa-clipboard-check"></i> Symptoms & Lifestyle</h3>
+                        <div class="category-grid">
+                            <div class="form-group">
+                                <label for="Weight_gain">Weight Gain?</label>
+                                <input type="number" id="Weight_gain" name="Weight_gain" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hair_growth">Abnormal Hair Growth?</label>
+                                <input type="number" id="hair_growth" name="hair_growth" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Skin_darkening">Skin Darkening?</label>
+                                <input type="number" id="Skin_darkening" name="Skin_darkening" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Hair_loss">Hair Loss?</label>
+                                <input type="number" id="Hair_loss" name="Hair_loss" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Pimples">Increased Pimples?</label>
+                                <input type="number" id="Pimples" name="Pimples" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Fast_food">Fast Food Consumption?</label>
+                                <input type="number" id="Fast_food" name="Fast_food" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Reg_exercise">Regular Exercise?</label>
+                                <input type="number" id="Reg_exercise" name="Reg_exercise" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-search"></i> Predict PCOS Risk
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Prediction Result -->
+        {% if prediction_text %}
+        <div class="prediction-result">
+           <h3><i class="fas fa-chart-line"></i> Prediction Result</h3>
+           <p class="prediction-text">{{ prediction_text }}</p>
+           <a href="{{ url_for('download_report') }}" class="submit-btn" style="margin-top:20px;">Download Report (PDF)</a>
+        </div>
+        <div class="note-section" style="margin-top:30px;">
+           <h4><i class="fas fa-lightbulb"></i> PCOS Management Guidelines</h4>
+           <ul>
+           <li>Maintain a healthy weight with a balanced diet and regular exercise.</li>
+           <li>Monitor blood sugar and cholesterol levels regularly.</li>
+           <li>Consult a gynecologist or endocrinologist for personalized care.</li>
+           <li>Manage stress with relaxation techniques and adequate sleep.</li>
+           <li>Follow prescribed medications and attend regular follow-ups.</li>
+           </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add active class to current nav link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Form validation and enhancement
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input[type="number"]');
+        
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value < 0) {
+                    this.style.borderColor = '#e74c3c';
+                } else {
+                    this.style.borderColor = '#e1e5e9';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Enhanced JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+
