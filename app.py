@@ -9,11 +9,10 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 
-
 app = Flask(__name__)
 app.secret_key = 'your-very-secret-key'  # Use a fixed string in production
 
-# Load the trained model
+# Load model
 try:
     model = pickle.load(open('model.pkl', 'rb'))
 except FileNotFoundError:
@@ -23,40 +22,147 @@ except FileNotFoundError:
 
 @app.route("/")
 def home():
-    """Home page with PCOS prediction form"""
     return render_template('index.html')
 
 
 @app.route("/about")
 def about():
-    """About page with PCOS information"""
     return render_template('about.html')
 
 
 @app.route('/download_report')
 def download_report():
-    pdf_data = session.get('pdf_report')
-    if not pdf_data:
+    input_values = session.get('input_values')
+    result = session.get('prediction_result')
+    if not input_values or not result:
         flash('No report available. Please generate a prediction first.', 'error')
         return redirect(url_for('home'))
-    buffer = io.BytesIO(base64.b64decode(pdf_data))
+    buffer = io.BytesIO()
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from reportlab.lib import colors
+    import datetime
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+    pdf.setFont("Helvetica-Bold", 20)
+    pdf.setFillColor(colors.HexColor("#667eea"))
+    pdf.drawCentredString(width / 2, height - 60, "PCOS Prediction Report")
+    pdf.setFillColor(colors.black)
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(40, height - 90, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    y = height - 120
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(40, y, "Patient Input Details:")
+    y -= 20
+    pdf.setFont("Helvetica", 11)
+    row_height = 16
+    for label, value in input_values.items():
+        if y < 80:
+            pdf.showPage()
+            y = height - 60
+            pdf.setFont("Helvetica", 11)
+        pdf.drawString(50, y, f"{label}: {value}")
+        y -= row_height
+    y -= 10
+    pdf.setFont("Helvetica-Bold", 13)
+    pdf.setFillColor(colors.HexColor("#764ba2"))
+    pdf.drawString(40, y, "Prediction Result:")
+    pdf.setFillColor(colors.black)
+    y -= 20
+    pdf.drawString(60, y, result)
+    pdf.showPage()
+    pdf.save()
+    buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name="PCOS_Report.pdf", mimetype="application/pdf")
+
+
+@app.route('/download_medical_report')
+def download_medical_report():
+    input_values = session.get('input_values')
+    result = session.get('prediction_result')
+    if not input_values or not result:
+        flash('No medical report available. Please generate a prediction first.', 'error')
+        return redirect(url_for('home'))
+    buffer2 = io.BytesIO()
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from reportlab.lib import colors
+    import datetime
+    pdf2 = canvas.Canvas(buffer2, pagesize=A4)
+    width, height = A4
+    pdf2.setFont("Helvetica-Bold", 20)
+    pdf2.drawCentredString(width / 2, height - 60, "MEDICAL REPORT")
+    y = height - 100
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.drawString(40, y, "Visit Info")
+    y -= 20
+    pdf2.setFont("Helvetica", 11)
+    pdf2.drawString(60, y, "Doctor: Dr. Olivia Greene")
+    pdf2.drawRightString(width - 60, y, f"Visit Date: {datetime.datetime.now().strftime('%d.%m.%Y')}")
+    y -= 16
+    pdf2.drawString(60, y, "Specialization: Gynecology")
+    y -= 30
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.drawString(40, y, "Patient Info")
+    y -= 20
+    pdf2.setFont("Helvetica", 11)
+    pdf2.drawString(60, y, f"Full Name: {input_values.get('Full Name')}")
+    pdf2.drawRightString(width - 60, y, f"Age: {input_values.get('Age')} yrs")
+    y -= 16
+    pdf2.drawString(60, y, f"Phone: {input_values.get('Phone')}")
+    pdf2.drawRightString(width - 60, y, f"Email: {input_values.get('Email')}")
+    y -= 30
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.setFillColor(colors.green)
+    pdf2.drawString(40, y, "Assessment")
+    y -= 20
+    pdf2.setFont("Helvetica", 11)
+    pdf2.setFillColor(colors.black)
+    pdf2.drawString(60, y, "Patient presented with symptoms and test values.")
+    y -= 16
+    pdf2.drawString(60, y, "Based on the prediction, results are as follows:")
+    y -= 30
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.setFillColor(colors.green)
+    pdf2.drawString(40, y, "Diagnosis")
+    y -= 20
+    pdf2.setFont("Helvetica", 11)
+    pdf2.setFillColor(colors.black)
+    pdf2.drawString(60, y, f"Prediction Result: {result}")
+    y -= 30
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.setFillColor(colors.green)
+    pdf2.drawString(40, y, "Prescription")
+    y -= 20
+    pdf2.setFont("Helvetica", 11)
+    pdf2.setFillColor(colors.black)
+    if result == "PCOS Positive":
+        pdf2.drawString(60, y, "Signs of PCOS detected. Consult a gynecologist.")
+        y -= 16
+        pdf2.drawString(60, y, "Recommended: exercise, balanced diet, stress management.")
+    else:
+        pdf2.drawString(60, y, "No significant signs of PCOS detected.")
+        y -= 16
+        pdf2.drawString(60, y, "Maintain healthy lifestyle and regular checkups.")
+    pdf2.showPage()
+    pdf2.save()
+    buffer2.seek(0)
+    return send_file(buffer2, as_attachment=True, download_name="Medical_Report.pdf", mimetype="application/pdf")
 
 
 @app.route("/<name>")
 def rande(name):
-    """Redirect any unknown routes to about page"""
     return redirect(url_for('about'))
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """
-    Handle PCOS prediction form submission
-    """
     try:
-        # List of (field label, form key)
+        # Extended input fields
         input_fields = [
+            ("Full Name", "FullName"),
+            ("Email", "Email"),
+            ("Phone", "Phone"),
             ("Age", "Age"),
             ("Weight (kg)", "Weight"),
             ("Height (cm)", "Height"),
@@ -87,101 +193,36 @@ def predict():
             ("Fast Food Consumption", "Fast_food"),
             ("Regular Exercise", "Reg_exercise"),
         ]
+
+
         features = []
         input_values = {}
         for label, key in input_fields:
-            value = float(request.form.get(key))
-            features.append(value)
-            input_values[label] = value
+            value = request.form.get(key)
+            if label in ["Full Name", "Email", "Phone"]:
+                input_values[label] = value
+            else:
+                value = float(value)
+                features.append(value)
+                input_values[label] = value
 
         prediction = model.predict([features])
         result = "PCOS Positive" if prediction[0] == 1 else "PCOS Negative"
 
-        # --- PDF generation ---
-        buffer = io.BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=A4)
-        width, height = A4
-
-        # Header
-        pdf.setFont("Helvetica-Bold", 20)
-        pdf.setFillColor(colors.HexColor("#667eea"))
-        pdf.drawCentredString(width / 2, height - 60, "PCOS Prediction Report")
-        pdf.setFillColor(colors.black)
-        pdf.setFont("Helvetica", 12)
-        pdf.drawString(40, height - 90, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-        # Section Title
-        y = height - 120
-        pdf.setFont("Helvetica-Bold", 14)
-        pdf.drawString(40, y, "Patient Input Details:")
-        y -= 20
-
-        # Draw a table-like structure for inputs
-        pdf.setFont("Helvetica", 11)
-        row_height = 16
-        col1_x = 50
-        col2_x = 250
-        for label, value in input_values.items():
-            if y < 80:
-                pdf.showPage()
-                y = height - 60
-                pdf.setFont("Helvetica", 11)
-            pdf.drawString(col1_x, y, f"{label}:")
-            pdf.drawString(col2_x, y, str(value))
-            y -= row_height
-
-        # Prediction Result Section
-        y -= 10
-        pdf.setFont("Helvetica-Bold", 13)
-        pdf.setFillColor(colors.HexColor("#764ba2"))
-        pdf.drawString(40, y, "Prediction Result:")
-        pdf.setFillColor(colors.black)
-        pdf.setFont("Helvetica", 12)
-        y -= 20
-        pdf.drawString(60, y, result)
-        y -= 30
-
-        # Footer
-        pdf.setFont("Helvetica-Oblique", 9)
-        pdf.setFillColor(colors.grey)
-        pdf.drawString(40, 40, "This report is generated by the PCOS Prediction Tool.")
-        pdf.setFillColor(colors.black)
-
-        pdf.showPage()
-        pdf.save()
-        buffer.seek(0)
-
-        # Store PDF in session as base64
-        session['pdf_report'] = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        # Store only input values and result in session
+        session['input_values'] = input_values
+        session['prediction_result'] = result
 
         return render_template('index.html', prediction_text=result)
+
     except Exception as e:
-        flash(f'An error occurred during prediction: {str(e)}', 'error')
+        flash(f'Error: {str(e)}', 'error')
         return render_template('index.html')
 
 
-@app.errorhandler(404)
-def not_found_error(error):
-    """Handle 404 errors"""
-    return render_template('index.html'), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    """Handle 500 errors"""
-    flash('An internal server error occurred. Please try again.', 'error')
-    return render_template('index.html'), 500
-
-
 if __name__ == "__main__":
-    # Check if model is available
     if model is None:
-        print("Error: Cannot start application without model.pkl")
+        print("Error: Cannot start app without model.pkl")
         exit(1)
 
-    print("PCOS Prediction Web Application")
-    print("Model loaded successfully!")
-    print("Starting Flask application...")
-
     app.run(debug=True, host='0.0.0.0', port=5000)
-

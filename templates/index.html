@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +39,7 @@
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .header p {
@@ -90,7 +91,7 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .info-section h2 {
@@ -151,7 +152,7 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .form-section h2 {
@@ -229,7 +230,7 @@
             padding: 30px;
             text-align: center;
             margin-top: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .prediction-result h3 {
@@ -255,15 +256,15 @@
             .container {
                 padding: 15px;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .nav {
                 flex-direction: column;
                 align-items: center;
@@ -299,6 +300,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -376,7 +378,8 @@
                 <div class="note-section">
                     <h4><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
                     <ul>
-                        <li><strong>Blood Pressure:</strong> Systolic (heart contracting) and Diastolic (heart relaxing)</li>
+                        <li><strong>Blood Pressure:</strong> Systolic (heart contracting) and Diastolic (heart relaxing)
+                        </li>
                         <li><strong>Follicle Count:</strong> PCOS patients often have 12+ immature follicles</li>
                         <li><strong>Yes/No Questions:</strong> Use 1 for Yes, 0 for No</li>
                         <li><strong>Units:</strong> Use metric system for all measurements</li>
@@ -387,7 +390,7 @@
             <!-- Form Section -->
             <div class="form-section">
                 <h2><i class="fas fa-clipboard-list"></i> PCOS Risk Assessment</h2>
-                
+
                 <form action="{{ url_for('predict') }}" method="post">
                     <!-- Personal Information -->
                     <div class="form-category">
@@ -399,15 +402,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="Weight">Weight (kg)</label>
-                                <input type="number" step="0.1" id="Weight" name="Weight" placeholder="Weight in kg" required>
+                                <input type="number" step="0.1" id="Weight" name="Weight" placeholder="Weight in kg"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="Height">Height (cm)</label>
-                                <input type="number" step="0.1" id="Height" name="Height" placeholder="Height in cm" required>
+                                <input type="number" step="0.1" id="Height" name="Height" placeholder="Height in cm"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="BMI">BMI</label>
-                                <input type="number" step="0.1" id="BMI" name="BMI" placeholder="Body Mass Index" required>
+                                <input type="number" step="0.1" id="BMI" name="BMI" placeholder="Body Mass Index"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -418,7 +424,8 @@
                         <div class="category-grid">
                             <div class="form-group">
                                 <label for="PulseRate">Pulse Rate (bpm)</label>
-                                <input type="number" id="PulseRate" name="PulseRate" placeholder="Beats per minute" required>
+                                <input type="number" id="PulseRate" name="PulseRate" placeholder="Beats per minute"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="RR">Respiration Rate</label>
@@ -426,11 +433,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="BP_systolic">Systolic BP (mmHg)</label>
-                                <input type="number" id="BP_systolic" name="BP_systolic" placeholder="Systolic pressure" required>
+                                <input type="number" id="BP_systolic" name="BP_systolic" placeholder="Systolic pressure"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="BP_diastolic">Diastolic BP (mmHg)</label>
-                                <input type="number" id="BP_diastolic" name="BP_diastolic" placeholder="Diastolic pressure" required>
+                                <input type="number" id="BP_diastolic" name="BP_diastolic"
+                                    placeholder="Diastolic pressure" required>
                             </div>
                         </div>
                     </div>
@@ -441,19 +450,23 @@
                         <div class="category-grid">
                             <div class="form-group">
                                 <label for="Cycle">Irregular Periods?</label>
-                                <input type="number" id="Cycle" name="Cycle(R/I)" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Cycle" name="Cycle(R/I)" placeholder="1 for Yes, 0 for No"
+                                    min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Pregnant">Ever Been Pregnant?</label>
-                                <input type="number" id="Pregnant" name="Pregnant" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Pregnant" name="Pregnant" placeholder="1 for Yes, 0 for No"
+                                    min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Abortions">Number of Abortions</label>
-                                <input type="number" id="Abortions" name="No. of Abortions" placeholder="Count of abortions" required>
+                                <input type="number" id="Abortions" name="No. of Abortions"
+                                    placeholder="Count of abortions" required>
                             </div>
                             <div class="form-group">
                                 <label for="Follicle_count">Follicle Count</label>
-                                <input type="number" id="Follicle_count" name="Follicle_count" placeholder="Total follicle count" required>
+                                <input type="number" id="Follicle_count" name="Follicle_count"
+                                    placeholder="Total follicle count" required>
                             </div>
                         </div>
                     </div>
@@ -472,7 +485,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="FSH_LH_ratio">FSH:LH Ratio</label>
-                                <input type="number" step="0.1" id="FSH_LH_ratio" name="FSH_LH_ratio" placeholder="FSH to LH ratio" required>
+                                <input type="number" step="0.1" id="FSH_LH_ratio" name="FSH_LH_ratio"
+                                    placeholder="FSH to LH ratio" required>
                             </div>
                             <div class="form-group">
                                 <label for="TSH">TSH Level (μIU/ml)</label>
@@ -484,15 +498,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="PRL">PRL Level (ng/ml)</label>
-                                <input type="number" step="0.1" id="PRL" name="PRL" placeholder="Prolactin level" required>
+                                <input type="number" step="0.1" id="PRL" name="PRL" placeholder="Prolactin level"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="VitD3">Vitamin D3 (ng/ml)</label>
-                                <input type="number" step="0.1" id="VitD3" name="VitD3" placeholder="Vitamin D3 level" required>
+                                <input type="number" step="0.1" id="VitD3" name="VitD3" placeholder="Vitamin D3 level"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="PRG">Progesterone (ng/ml)</label>
-                                <input type="number" step="0.1" id="PRG" name="PRG" placeholder="Progesterone level" required>
+                                <input type="number" step="0.1" id="PRG" name="PRG" placeholder="Progesterone level"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -503,11 +520,13 @@
                         <div class="category-grid">
                             <div class="form-group">
                                 <label for="W_H_ratio">Waist:Hip Ratio</label>
-                                <input type="number" step="0.01" id="W_H_ratio" name="W_H_ratio" placeholder="Waist to hip ratio" required>
+                                <input type="number" step="0.01" id="W_H_ratio" name="W_H_ratio"
+                                    placeholder="Waist to hip ratio" required>
                             </div>
                             <div class="form-group">
                                 <label for="RBS">Random Blood Sugar (mg/dl)</label>
-                                <input type="number" step="0.1" id="RBS" name="RBS" placeholder="Blood sugar level" required>
+                                <input type="number" step="0.1" id="RBS" name="RBS" placeholder="Blood sugar level"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -518,31 +537,38 @@
                         <div class="category-grid">
                             <div class="form-group">
                                 <label for="Weight_gain">Weight Gain?</label>
-                                <input type="number" id="Weight_gain" name="Weight_gain" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Weight_gain" name="Weight_gain"
+                                    placeholder="1 for Yes, 0 for No" min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="hair_growth">Abnormal Hair Growth?</label>
-                                <input type="number" id="hair_growth" name="hair_growth" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="hair_growth" name="hair_growth"
+                                    placeholder="1 for Yes, 0 for No" min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Skin_darkening">Skin Darkening?</label>
-                                <input type="number" id="Skin_darkening" name="Skin_darkening" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Skin_darkening" name="Skin_darkening"
+                                    placeholder="1 for Yes, 0 for No" min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Hair_loss">Hair Loss?</label>
-                                <input type="number" id="Hair_loss" name="Hair_loss" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Hair_loss" name="Hair_loss" placeholder="1 for Yes, 0 for No"
+                                    min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Pimples">Increased Pimples?</label>
-                                <input type="number" id="Pimples" name="Pimples" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Pimples" name="Pimples" placeholder="1 for Yes, 0 for No"
+                                    min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Fast_food">Fast Food Consumption?</label>
-                                <input type="number" id="Fast_food" name="Fast_food" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Fast_food" name="Fast_food" placeholder="1 for Yes, 0 for No"
+                                    min="0" max="1" required>
                             </div>
                             <div class="form-group">
                                 <label for="Reg_exercise">Regular Exercise?</label>
-                                <input type="number" id="Reg_exercise" name="Reg_exercise" placeholder="1 for Yes, 0 for No" min="0" max="1" required>
+                                <input type="number" id="Reg_exercise" name="Reg_exercise"
+                                    placeholder="1 for Yes, 0 for No" min="0" max="1" required>
                             </div>
                         </div>
                     </div>
@@ -553,30 +579,69 @@
                 </form>
             </div>
         </div>
+        <div class="form-category">
+            <h3><i class="fas fa-user"></i> Personal Information</h3>
+            <div class="category-grid">
+                <div class="form-group">
+                    <label for="FullName">Full Name</label>
+                    <input type="text" id="FullName" name="FullName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" id="Email" name="Email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="Phone">Phone</label>
+                    <input type="tel" id="Phone" name="Phone" placeholder="Enter phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="Age">Age</label>
+                    <input type="number" id="Age" name="Age" placeholder="Enter your age" required>
+                </div>
+                <div class="form-group">
+                    <label for="Weight">Weight (kg)</label>
+                    <input type="number" step="0.1" id="Weight" name="Weight" placeholder="Weight in kg" required>
+                </div>
+                <div class="form-group">
+                    <label for="Height">Height (cm)</label>
+                    <input type="number" step="0.1" id="Height" name="Height" placeholder="Height in cm" required>
+                </div>
+                <div class="form-group">
+                    <label for="BMI">BMI</label>
+                    <input type="number" step="0.1" id="BMI" name="BMI" placeholder="Body Mass Index" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- ... keep rest of form same ... -->
 
         <!-- Prediction Result -->
         {% if prediction_text %}
         <div class="prediction-result">
-           <h3><i class="fas fa-chart-line"></i> Prediction Result</h3>
-           <p class="prediction-text">{{ prediction_text }}</p>
-           <a href="{{ url_for('download_report') }}" class="submit-btn" style="margin-top:20px;">Download Report (PDF)</a>
+            <h3><i class="fas fa-chart-line"></i> Prediction Result</h3>
+            <p class="prediction-text">{{ prediction_text }}</p>
+            <a href="{{ url_for('download_report') }}" class="submit-btn" style="margin-top:20px;">Download Simple
+                Report</a>
+            <a href="{{ url_for('download_medical_report') }}" class="submit-btn" style="margin-top:20px;">Download
+                Medical Report</a>
+            <div class="note-section" style="margin-top:30px;">
+                <h4><i class="fas fa-lightbulb"></i> PCOS Management Guidelines</h4>
+                <ul>
+                    <li>Maintain a healthy weight with a balanced diet and regular exercise.</li>
+                    <li>Monitor blood sugar and cholesterol levels regularly.</li>
+                    <li>Consult a gynecologist or endocrinologist for personalized care.</li>
+                    <li>Manage stress with relaxation techniques and adequate sleep.</li>
+                    <li>Follow prescribed medications and attend regular follow-ups.</li>
+                </ul>
+            </div>
         </div>
-        <div class="note-section" style="margin-top:30px;">
-           <h4><i class="fas fa-lightbulb"></i> PCOS Management Guidelines</h4>
-           <ul>
-           <li>Maintain a healthy weight with a balanced diet and regular exercise.</li>
-           <li>Monitor blood sugar and cholesterol levels regularly.</li>
-           <li>Consult a gynecologist or endocrinologist for personalized care.</li>
-           <li>Manage stress with relaxation techniques and adequate sleep.</li>
-           <li>Follow prescribed medications and attend regular follow-ups.</li>
-           </ul>
-        </div>
+
         {% endif %}
     </div>
 
     <script>
         // Add active class to current nav link
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const currentPath = window.location.pathname;
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
@@ -589,9 +654,9 @@
         // Form validation and enhancement
         const form = document.querySelector('form');
         const inputs = form.querySelectorAll('input[type="number"]');
-        
+
         inputs.forEach(input => {
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 if (this.value < 0) {
                     this.style.borderColor = '#e74c3c';
                 } else {
@@ -600,9 +665,9 @@
             });
         });
     </script>
-    
+
     <!-- Enhanced JavaScript -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
-</html>
 
+</html>
