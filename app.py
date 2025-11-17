@@ -223,6 +223,98 @@ def medical_report_preview():
     return render_template('medical_report.html', input_values=input_values, result=result, now=now)
 
 
+# Chatbot Q&A
+CHATBOT_QA = [
+    {
+        "question": "What is PCOS?",
+        "answer": "PCOS (Polycystic Ovary Syndrome) is an endocrine disorder that affects women of reproductive age. It is characterized by irregular menstrual cycles, elevated androgens (male hormones), and polycystic ovaries. Women with PCOS may experience weight gain, hirsutism (excess hair growth), acne, and fertility issues."
+    },
+    {
+        "question": "What are the symptoms of PCOS?",
+        "answer": "Common PCOS symptoms include: irregular or absent periods, heavy bleeding, weight gain, difficulty losing weight, excess hair growth (hirsutism), acne, male-pattern baldness, dark patches of skin (acanthosis nigricans), and difficulty getting pregnant."
+    },
+    {
+        "question": "What causes PCOS?",
+        "answer": "The exact cause of PCOS is unknown, but it is believed to involve a combination of genetic and environmental factors. Insulin resistance, chronic inflammation, and hormonal imbalances are thought to play a role in the development of PCOS."
+    },
+    {
+        "question": "How is PCOS diagnosed?",
+        "answer": "PCOS is typically diagnosed using the Rotterdam criteria, which require two of three features: irregular ovulation/periods, clinical or biochemical signs of elevated androgens, and polycystic ovaries on ultrasound. Blood tests for hormone levels (FSH, LH, testosterone) and imaging are commonly used."
+    },
+    {
+        "question": "What are hormone levels in PCOS?",
+        "answer": "In PCOS, typical hormone abnormalities include: elevated LH (Luteinizing Hormone), low or normal FSH, elevated testosterone or free androgen index, elevated AMH (Anti-Müllerian Hormone), and sometimes elevated prolactin or TSH. The FSH:LH ratio is often >3:1 or inverted."
+    },
+    {
+        "question": "Can PCOS be cured?",
+        "answer": "PCOS cannot be cured, but it can be managed effectively through lifestyle changes (diet, exercise, weight loss), medications (birth control, metformin), and monitoring. Early diagnosis and management can help reduce symptoms and prevent long-term complications."
+    },
+    {
+        "question": "What lifestyle changes help PCOS?",
+        "answer": "Effective lifestyle modifications include: maintaining a healthy weight, eating a balanced diet rich in fiber and low in processed foods, regular physical exercise (150+ min/week), stress management, adequate sleep (7-9 hours), and avoiding smoking and excess alcohol."
+    },
+    {
+        "question": "Can I get pregnant with PCOS?",
+        "answer": "Yes, many women with PCOS can conceive with proper treatment. Options include weight loss, ovulation-inducing medications (like clomiphene), insulin-sensitizing agents (metformin), and in some cases, assisted reproductive techniques like IVF. Early intervention and specialist consultation are important."
+    },
+    {
+        "question": "What is the FSH:LH ratio?",
+        "answer": "The FSH:LH ratio is used to help diagnose PCOS. Normal ratio is typically 1:1 to 1:3. In PCOS, the ratio is often inverted (higher LH than FSH), commonly 3:1 or greater. This indicates an imbalance in hormones regulating ovulation."
+    },
+    {
+        "question": "What is AMH and why is it elevated in PCOS?",
+        "answer": "AMH (Anti-Müllerian Hormone) is produced by ovarian follicles. In PCOS, AMH levels are typically elevated (>48 pmol/L) because there are many immature follicles present. High AMH correlates with polycystic ovaries and can indicate reduced ovulation."
+    },
+    {
+        "question": "What is vitamin D deficiency and PCOS?",
+        "answer": "Studies show 67-85% of PCOS patients have vitamin D deficiency (<20 ng/ml). Low vitamin D is associated with insulin resistance, irregular cycles, and reduced fertility. Supplementing vitamin D (1000-4000 IU daily) may help improve PCOS symptoms and metabolic function."
+    },
+    {
+        "question": "What is the best diet for PCOS?",
+        "answer": "A PCOS-friendly diet typically includes: high-fiber foods, lean proteins, healthy fats, low glycemic index (GI) carbs, and whole grains. Avoid refined sugars, processed foods, and excess saturated fats. Anti-inflammatory foods and balanced macronutrients help manage insulin resistance."
+    },
+    {
+        "question": "How often should I exercise with PCOS?",
+        "answer": "The WHO recommends 150 minutes of moderate-intensity aerobic exercise or 75 minutes of vigorous exercise weekly for adults. Additionally, resistance training 2-3 times per week helps improve insulin sensitivity and supports weight management in PCOS patients."
+    },
+    {
+        "question": "When should I see a doctor for PCOS?",
+        "answer": "Consult a healthcare provider if you experience irregular periods, unexplained weight gain, excess hair growth, acne, or fertility problems. A gynecologist or endocrinologist can perform diagnostic tests and recommend a personalized treatment plan. Early diagnosis improves outcomes."
+    },
+    {
+        "question": "What is insulin resistance and PCOS?",
+        "answer": "30-40% of PCOS patients have insulin resistance, where cells don't respond properly to insulin. This leads to elevated blood sugar and increased insulin production, which can worsen PCOS symptoms. Managing insulin resistance through diet and exercise is crucial for PCOS management."
+    }
+]
+
+
+@app.route('/api/chatbot', methods=['POST'])
+def chatbot():
+    from flask import jsonify
+    user_question = request.json.get('question', '').strip().lower()
+    
+    # Simple keyword matching
+    best_match = None
+    max_score = 0
+    
+    for qa in CHATBOT_QA:
+        # Check for keyword overlap
+        q_words = set(user_question.split())
+        qa_words = set(qa['question'].lower().split())
+        score = len(q_words & qa_words)
+        if score > max_score:
+            max_score = score
+            best_match = qa
+    
+    # If no match or very low score, return default
+    if best_match is None or max_score < 1:
+        response = "I'm not sure about that. Try asking about PCOS symptoms, diagnosis, treatment, lifestyle changes, or specific hormones (FSH, LH, AMH, etc.)."
+    else:
+        response = best_match['answer']
+    
+    return jsonify({'answer': response})
+
+
 @app.route("/<name>")
 def rande(name):
     return redirect(url_for('about'))
