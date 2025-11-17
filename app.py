@@ -88,66 +88,139 @@ def download_medical_report():
     from reportlab.pdfgen import canvas
     from reportlab.lib import colors
     import datetime
+
     pdf2 = canvas.Canvas(buffer2, pagesize=A4)
     width, height = A4
-    pdf2.setFont("Helvetica-Bold", 20)
-    pdf2.drawCentredString(width / 2, height - 60, "MEDICAL REPORT")
-    y = height - 100
-    pdf2.setFont("Helvetica-Bold", 12)
-    pdf2.drawString(40, y, "Visit Info")
-    y -= 20
-    pdf2.setFont("Helvetica", 11)
-    pdf2.drawString(60, y, "Doctor: Dr. Olivia Greene")
-    pdf2.drawRightString(width - 60, y, f"Visit Date: {datetime.datetime.now().strftime('%d.%m.%Y')}")
-    y -= 16
-    pdf2.drawString(60, y, "Specialization: Gynecology")
-    y -= 30
-    pdf2.setFont("Helvetica-Bold", 12)
-    pdf2.drawString(40, y, "Patient Info")
-    y -= 20
-    pdf2.setFont("Helvetica", 11)
-    pdf2.drawString(60, y, f"Full Name: {input_values.get('Full Name')}")
-    pdf2.drawRightString(width - 60, y, f"Age: {input_values.get('Age')} yrs")
-    y -= 16
-    pdf2.drawString(60, y, f"Phone: {input_values.get('Phone')}")
-    pdf2.drawRightString(width - 60, y, f"Email: {input_values.get('Email')}")
-    y -= 30
-    pdf2.setFont("Helvetica-Bold", 12)
-    pdf2.setFillColor(colors.green)
-    pdf2.drawString(40, y, "Assessment")
-    y -= 20
-    pdf2.setFont("Helvetica", 11)
+
+    # Header
+    clinic_name = "Sunrise Women's Health Clinic"
+    pdf2.setFillColor(colors.HexColor('#2b5aa6'))
+    pdf2.setFont("Helvetica-Bold", 18)
+    pdf2.drawString(40, height - 50, clinic_name)
+    pdf2.setFont("Helvetica", 10)
     pdf2.setFillColor(colors.black)
-    pdf2.drawString(60, y, "Patient presented with symptoms and test values.")
-    y -= 16
-    pdf2.drawString(60, y, "Based on the prediction, results are as follows:")
-    y -= 30
+    pdf2.drawString(40, height - 66, "Comprehensive Gynecology & Endocrinology Services")
+    pdf2.line(40, height - 74, width - 40, height - 74)
+
+    # Report title and date
+    pdf2.setFont("Helvetica-Bold", 16)
+    pdf2.setFillColor(colors.HexColor('#764ba2'))
+    pdf2.drawCentredString(width / 2, height - 96, "Medical Consultation Report")
+    pdf2.setFont("Helvetica", 9)
+    pdf2.setFillColor(colors.black)
+    pdf2.drawRightString(width - 40, height - 96, f"Date: {datetime.datetime.now().strftime('%d %b %Y')}")
+
+    # Patient info box
+    box_y = height - 130
+    pdf2.roundRect(40, box_y - 70, width - 80, 70, 6, stroke=1, fill=0)
+    pdf2.setFont("Helvetica-Bold", 11)
+    pdf2.drawString(50, box_y - 20, f"Patient: {input_values.get('Full Name', 'N/A')}")
+    pdf2.setFont("Helvetica", 10)
+    pdf2.drawString(50, box_y - 36, f"Age: {input_values.get('Age', 'N/A')}   |   Phone: {input_values.get('Phone', 'N/A')}")
+    pdf2.drawRightString(width - 50, box_y - 20, f"Email: {input_values.get('Email', 'N/A')}")
+
+    # Assessment header
+    y = box_y - 90
     pdf2.setFont("Helvetica-Bold", 12)
-    pdf2.setFillColor(colors.green)
+    pdf2.setFillColor(colors.HexColor('#2b5aa6'))
+    pdf2.drawString(40, y, "Clinical Assessment")
+    y -= 16
+    pdf2.setFont("Helvetica", 10)
+    pdf2.setFillColor(colors.black)
+    pdf2.drawString(50, y, "The patient presented for PCOS risk assessment. Clinical parameters and lab values are documented below.")
+    y -= 22
+
+    # Lab values / Inputs table (two columns)
+    pdf2.setFont("Helvetica-Bold", 11)
+    pdf2.setFillColor(colors.HexColor('#667eea'))
+    pdf2.drawString(40, y, "Measured Parameters")
+    y -= 14
+    pdf2.setFont("Helvetica", 10)
+    pdf2.setFillColor(colors.black)
+
+    labels = [
+        ("Weight (kg)", 'Weight'), ("Height (cm)", 'Height'), ("BMI", 'BMI'), ("Pulse Rate (bpm)", 'PulseRate'),
+        ("Respiration Rate", 'RR'), ("Systolic BP", 'BP_systolic'), ("Diastolic BP", 'BP_diastolic'),
+        ("Follicle Count", 'Follicle_count'), ("FSH (mlU/ml)", 'FSH'), ("LH (mlU/ml)", 'LH'),
+        ("FSH:LH Ratio", 'FSH_LH_ratio'), ("TSH (μIU/ml)", 'TSH'), ("AMH (pmol/L)", 'AMH'),
+        ("PRL (ng/ml)", 'PRL'), ("Vitamin D3 (ng/ml)", 'VitD3'), ("Progesterone (ng/ml)", 'PRG'),
+        ("Waist:Hip Ratio", 'W_H_ratio'), ("Random Blood Sugar (mg/dl)", 'RBS')
+    ]
+
+    col_x = 50
+    col2_x = width / 2 + 10
+    row_h = 14
+    for i, (label_text, key) in enumerate(labels):
+        if y < 120:
+            pdf2.showPage()
+            y = height - 80
+            pdf2.setFont("Helvetica", 10)
+        x = col_x if i % 2 == 0 else col2_x
+        val = input_values.get(label_text) or input_values.get(key) or 'N/A'
+        pdf2.drawString(x, y, f"{label_text}: ")
+        pdf2.drawRightString(x + 120, y, f"{val}")
+        if i % 2 == 1:
+            y -= row_h
+
+    # Space before diagnosis
+    y -= 18
+    pdf2.setFont("Helvetica-Bold", 12)
+    pdf2.setFillColor(colors.HexColor('#cc2b2b') if result == 'PCOS Positive' else colors.HexColor('#2b8f3e'))
     pdf2.drawString(40, y, "Diagnosis")
-    y -= 20
+    y -= 16
     pdf2.setFont("Helvetica", 11)
     pdf2.setFillColor(colors.black)
-    pdf2.drawString(60, y, f"Prediction Result: {result}")
-    y -= 30
+    pdf2.drawString(50, y, f"Result: {result}")
+    y -= 18
+
+    # Tailored advice/prescription
     pdf2.setFont("Helvetica-Bold", 12)
-    pdf2.setFillColor(colors.green)
-    pdf2.drawString(40, y, "Prescription")
-    y -= 20
-    pdf2.setFont("Helvetica", 11)
+    pdf2.setFillColor(colors.HexColor('#2b5aa6'))
+    pdf2.drawString(40, y, "Recommendations")
+    y -= 14
+    pdf2.setFont("Helvetica", 10)
     pdf2.setFillColor(colors.black)
     if result == "PCOS Positive":
-        pdf2.drawString(60, y, "Signs of PCOS detected. Consult a gynecologist.")
-        y -= 16
-        pdf2.drawString(60, y, "Recommended: exercise, balanced diet, stress management.")
+        adv = [
+            "Refer to specialist (Gynecologist/Endocrinologist)",
+            "Lifestyle modification: diet, exercise, weight management",
+            "Consider hormonal evaluation & tailored treatment plan",
+            "Monitor blood glucose and lipid profile"
+        ]
     else:
-        pdf2.drawString(60, y, "No significant signs of PCOS detected.")
-        y -= 16
-        pdf2.drawString(60, y, "Maintain healthy lifestyle and regular checkups.")
+        adv = [
+            "Maintain healthy lifestyle and routine follow-up",
+            "Repeat evaluation if symptoms persist",
+            "Routine screening for metabolic risk factors"
+        ]
+    for line in adv:
+        pdf2.drawString(50, y, f"- {line}")
+        y -= 14
+
+    # Signature
+    if y < 140:
+        pdf2.showPage()
+        y = height - 80
+    y -= 10
+    pdf2.drawString(50, y, "-------------------------------------")
+    pdf2.drawString(60, y - 14, "Dr. Olivia Greene")
+    pdf2.drawString(60, y - 28, "MBBS, DGO - Consultant Gynecologist")
+
     pdf2.showPage()
     pdf2.save()
     buffer2.seek(0)
     return send_file(buffer2, as_attachment=True, download_name="Medical_Report.pdf", mimetype="application/pdf")
+
+
+@app.route('/medical_report_preview')
+def medical_report_preview():
+    input_values = session.get('input_values')
+    result = session.get('prediction_result')
+    if not input_values or not result:
+        flash('No medical report available. Please generate a prediction first.', 'error')
+        return redirect(url_for('home'))
+    now = datetime.datetime.now().strftime('%d %b %Y')
+    return render_template('medical_report.html', input_values=input_values, result=result, now=now)
 
 
 @app.route("/<name>")

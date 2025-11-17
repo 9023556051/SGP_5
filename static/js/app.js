@@ -321,5 +321,62 @@ initializeSmoothScrolling();
 window.PCOSApp = {
     showMessage,
     validateForm,
-    validateInput
+    validateInput,
+    autofillDummyData: autofillDummyData
 };
+
+// Autofill form with reasonable dummy values so user can edit before submit
+function autofillDummyData(preset = 'default') {
+    const map = {
+        default: {
+            FullName: 'Jane Doe',
+            Email: 'jane.doe@example.com',
+            Phone: '555-0102',
+            Age: '28',
+            Weight: '68',
+            Height: '165',
+            BMI: '25',
+            PulseRate: '76',
+            RR: '16',
+            BP_systolic: '118',
+            BP_diastolic: '76',
+            'Cycle(R/I)': '1',
+            Pregnant: '0',
+            'No. of Abortions': '0',
+            Follicle_count: '14',
+            FSH: '6.5',
+            LH: '18.2',
+            FSH_LH_ratio: '0.36',
+            TSH: '2.5',
+            AMH: '56.0',
+            PRL: '15.0',
+            VitD3: '18.0',
+            PRG: '1.2',
+            W_H_ratio: '0.86',
+            RBS: '95',
+            Weight_gain: '1',
+            hair_growth: '1',
+            Skin_darkening: '0',
+            Hair_loss: '0',
+            Pimples: '1',
+            Fast_food: '1',
+            Reg_exercise: '0'
+        }
+    };
+
+    const values = map[preset] || map.default;
+    Object.keys(values).forEach(name => {
+        // inputs may use exact name attributes with parentheses, so use querySelector
+        const selector = `input[name="${name}"]`;
+        const el = document.querySelector(selector) || document.getElementById(name);
+        if (el) el.value = values[name];
+    });
+
+    showMessage('Form autofilled — edit any field before submitting.', 'success');
+}
+
+// Attach autofill button handler if present
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('autofillBtn');
+    if (btn) btn.addEventListener('click', () => autofillDummyData('default'));
+});
